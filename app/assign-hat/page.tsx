@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 
-import { CheckCircle2, AlertCircle } from "lucide-react";
-
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
 
 // This is a placeholder function. In a real implementation, this would interact with the Hats protocol.
 async function mintHat(address: string, name: string): Promise<boolean> {
@@ -22,25 +20,26 @@ export default function AssignHatPage() {
   const [address, setAddress] = useState("");
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setResult(null);
 
     try {
       const success = await mintHat(address, name);
-      setResult({
-        success,
-        message: success
+      toast({
+        variant: success ? "default" : "destructive",
+        title: success ? "Success" : "Error",
+        description: success
           ? `Successfully assigned a Hat to ${name} (${address})`
           : "Failed to assign Hat. Please try again.",
       });
     } catch (error) {
-      setResult({
-        success: false,
-        message: "An error occurred while assigning the Hat. Please try again.",
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "An error occurred while assigning the Hat. Please try again.",
       });
     } finally {
       setIsLoading(false);
@@ -82,18 +81,6 @@ export default function AssignHatPage() {
               {isLoading ? "Assigning..." : "Assign Hat"}
             </Button>
           </form>
-
-          {result && (
-            <Alert className={`mt-4 ${result.success ? "bg-green-100" : "bg-red-100"}`}>
-              {result.success ? (
-                <CheckCircle2 className="h-4 w-4" />
-              ) : (
-                <AlertCircle className="h-4 w-4" />
-              )}
-              <AlertTitle>{result.success ? "Success" : "Error"}</AlertTitle>
-              <AlertDescription>{result.message}</AlertDescription>
-            </Alert>
-          )}
         </CardContent>
       </Card>
     </div>
