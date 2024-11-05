@@ -23,7 +23,13 @@ const Header = () => {
       <nav className="border-gray-200 px-4 lg:px-6 py-5" aria-label="Main Navigation">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <Link href="/" className="flex items-center font-bold text-slate-900 text-2xl">
-            <Image src="/img/logo.svg" alt="Refunite Logo" width={56} height={56} priority />
+            <Image
+              src="/img/logo.svg"
+              alt="Refunite Network logo"
+              width={56}
+              height={56}
+              priority
+            />
           </Link>
           <div className="flex items-center lg:order-2 gap-4">
             <ConnectButton />
