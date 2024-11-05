@@ -35,7 +35,7 @@ export default function AssignHatPage() {
         success,
         message: success
           ? `Successfully assigned a Hat to ${name} (${address})`
-          : "Failed to assign-hat Hat. Please try again.",
+          : "Failed to assign Hat. Please try again.",
       });
     } catch (error) {
       setResult({
