@@ -1,12 +1,13 @@
 "use client";
 import React, { useState } from "react";
 
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+
+import ConnectButton from "./ConnectButton";
 
 const navItems = [
   { name: "Home", href: "/" },
