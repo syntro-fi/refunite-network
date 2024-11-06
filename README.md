@@ -2,6 +2,8 @@
 
 ## Frontend
 
+Please only use `bun` package manager.
+
 ### setup frontend
 
 ```
