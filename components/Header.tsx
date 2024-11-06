@@ -14,7 +14,6 @@ const navItems = [
   { name: "Account", href: "/user" },
   { name: "Assign Hat", href: "/assign-hat" },
   { name: "Recover role", href: "/recover-role" },
-  { name: "About", href: "/about" },
 ];
 
 const Header = () => {
