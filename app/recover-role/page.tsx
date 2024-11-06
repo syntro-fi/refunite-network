@@ -7,7 +7,6 @@ import { useAccount, usePublicClient, useWaitForTransactionReceipt, useWalletCli
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -55,58 +54,51 @@ export default function RecoverRolePage() {
 
   if (!isConnected) {
     return (
-      <div className="flex items-center justify-center min-h-screen p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Recover Role</CardTitle>
-            <CardDescription>Please connect your wallet to recover your role.</CardDescription>
-          </CardHeader>
-        </Card>
+      <div className="flex items-center justify-center min-h-screen p-4 bg-background">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold mb-4">Recover Role</h1>
+          <p className="text-base mb-6">Please connect your wallet to recover your role.</p>
+          <Button>Connect Wallet</Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Recover Role</CardTitle>
-          <CardDescription>Enter the address of a peer to recover your role</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="peerAddress">Peer Wallet Address</Label>
-              <Input
-                id="peerAddress"
-                placeholder="0x..."
-                value={peerAddress}
-                onChange={(e) => setPeerAddress(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={isLoading || !isConnected}>
-              {isLoading ? "Recovering..." : "Recover Role"}
-            </Button>
-          </form>
+    <div className="min-h-screen bg-background p-4 sm:p-6 md:p-8">
+      <div className="max-w-3xl mx-auto space-y-8">
+        <header>
+          <h1 className="text-2xl font-semibold">Recover Role</h1>
+        </header>
 
-          {(isSuccess || isError) && (
-            <Alert className={`mt-4 ${isSuccess ? "bg-green-100" : "bg-red-100"}`}>
-              {isSuccess ? (
-                <CheckCircle2 className="h-4 w-4" />
-              ) : (
-                <AlertCircle className="h-4 w-4" />
-              )}
-              <AlertTitle>{isSuccess ? "Success" : "Error"}</AlertTitle>
-              <AlertDescription>
-                {isSuccess
-                  ? "Your role has been successfully recovered."
-                  : "An error occurred while recovering your role. Please try again."}
-              </AlertDescription>
-            </Alert>
-          )}
-        </CardContent>
-      </Card>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="peerAddress">Peer Wallet Address</Label>
+            <Input
+              id="peerAddress"
+              placeholder="0x..."
+              value={peerAddress}
+              onChange={(e) => setPeerAddress(e.target.value)}
+              required
+            />
+          </div>
+          <Button type="submit" disabled={isLoading || !isConnected}>
+            {isLoading ? "Recovering..." : "Recover Role"}
+          </Button>
+        </form>
+
+        {(isSuccess || isError) && (
+          <Alert variant={isSuccess ? "default" : "destructive"}>
+            {isSuccess ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+            <AlertTitle>{isSuccess ? "Success" : "Error"}</AlertTitle>
+            <AlertDescription>
+              {isSuccess
+                ? "Your role has been successfully recovered."
+                : "An error occurred while recovering your role. Please try again."}
+            </AlertDescription>
+          </Alert>
+        )}
+      </div>
     </div>
   );
 }

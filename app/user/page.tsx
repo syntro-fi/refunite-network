@@ -7,7 +7,6 @@ import { useAccount, useReadContract } from "wagmi";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { abi as HatsAbi } from "@/lib/hatsAbi";
@@ -38,68 +37,64 @@ export default function AccountPage() {
 
   if (!isConnected) {
     return (
-      <div className="flex items-center justify-center min-h-screen p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Account</CardTitle>
-            <CardDescription>
-              Please connect your wallet to view your account details.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+      <div className="flex items-center justify-center min-h-screen p-4 bg-background">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold mb-4">Account</h1>
+          <p className="text-base mb-6">Please connect your wallet to view your account details.</p>
+          <Button>Connect Wallet</Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Account Details</CardTitle>
-          <CardDescription>Your Refunite network information</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-4">
-            <Avatar className="h-16 w-16">
-              <AvatarImage src={`https://robohash.org/${address}`} alt="User avatar" />
-              <AvatarFallback>UN</AvatarFallback>
-            </Avatar>
-            <div>
-              <h2 className="text-xl font-semibold">Community Leader</h2>
-              <p className="text-sm text-muted-foreground">
-                {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Unknown"}
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-background p-4 sm:p-6 md:p-8">
+      <div className="max-w-3xl mx-auto space-y-8">
+        <header className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold">Account</h1>
+          {/* <Button variant="outline" size="sm">Edit Profile</Button> */}
+        </header>
 
+        <section className="flex items-center space-x-4">
+          <Avatar className="h-16 w-16">
+            <AvatarImage src={`https://robohash.org/${address}`} alt="User avatar" />
+            <AvatarFallback>UN</AvatarFallback>
+          </Avatar>
           <div>
-            <h3 className="text-lg font-semibold mb-2">Hat Status</h3>
+            <h2 className="text-lg font-semibold">Community Leader</h2>
+            <p className="text-sm font-mono font-semibold text-indigo-600">
+              {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Unknown"}
+            </p>
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-md text-indigo-600 font-semibold tracking-tight mb-3">Hat Status</h2>
+          <div className="font-mono">
             {isLoading ? (
-              <Skeleton className="h-8 w-24" />
+              <Skeleton className="h-6 w-32" />
             ) : isError ? (
-              <Badge variant="destructive">Error loading Hat data</Badge>
+              <p className="text-red-500">Error loading Hat data</p>
             ) : hatId ? (
-              <Badge variant="default">Hat ID: {hatId}</Badge>
+              <p className="break-all">{hatId}</p>
             ) : (
-              <Badge variant="secondary">No Hat assigned</Badge>
+              <p className="text-gray-500">No Hat assigned</p>
             )}
           </div>
+        </section>
 
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Actions</h3>
-            <div className="space-y-2">
-              <Button className="w-full" onClick={() => alert("View Hat details")}>
-                View Hat Details
-              </Button>
-              <Link href="/recover-role" passHref>
-                <Button className="w-full" variant="outline">
-                  Recover Role
-                </Button>
-              </Link>
-            </div>
+        <section>
+          <h2 className="text-md text-indigo-600 font-semibold tracking-tight mb-3">Actions</h2>
+          <div className="flex gap-4">
+            <Button variant="default" onClick={() => alert("View Hat details")}>
+              View Hat Details
+            </Button>
+            <Link href="/recover-role" passHref>
+              <Button variant="secondary">Recover Role</Button>
+            </Link>
           </div>
-        </CardContent>
-      </Card>
+        </section>
+      </div>
     </div>
   );
 }

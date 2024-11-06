@@ -22,10 +22,10 @@ const Header = () => {
 
   return (
     <header>
-      <nav className="border-gray-200 px-4 lg:px-6 py-5" aria-label="Main Navigation">
+      <nav className="px-4 lg:px-6 py-5" aria-label="Main Navigation">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <div className="w-[200px] lg:flex-none">
-            <Link href="/" className="flex items-center font-bold text-slate-900 text-2xl">
+            <Link href="/" className="flex items-center font-bold text-indigo-800 text-2xl">
               <Image
                 src="/img/logo.svg"
                 alt="Refunite Network logo"
@@ -61,7 +61,7 @@ const Header = () => {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="block py-2 pr-4 pl-3 text-gray-600 font-semibold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0"
+                    className="block py-2 pr-4 pl-3 text-indigo-800 font-semibold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0"
                     onClick={() => setIsOpen(false)}
                   >
                     {item.name}

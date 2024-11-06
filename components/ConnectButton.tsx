@@ -45,13 +45,13 @@ export default function ConnectPanel() {
       {!account.address ? (
         <Button onClick={handleConnect}>Connect</Button>
       ) : (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="font-mono"
+                  className="font-mono text-indigo-600"
                   onClick={() => copyAddress(account.address!)}
                 >
                   {formatAddress(account.address)}
