@@ -1,14 +1,13 @@
 "use client";
-
-import "@rainbow-me/rainbowkit/styles.css";
 import React from "react";
 
+import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider, http } from "wagmi";
 import { sepolia } from "wagmi/chains";
 
-import "../app/globals.css";
+import "@/app/globals.css";
 
 export const wagmiConfig = getDefaultConfig({
   appName: process.env.NEXT_PUBLIC_APP_NAME!,

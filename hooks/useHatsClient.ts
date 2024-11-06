@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { HatsClient } from "@hatsprotocol/sdk-v1-core";
 import { getChainId, getPublicClient, getWalletClient } from "@wagmi/core";
 import { usePublicClient } from "wagmi";
