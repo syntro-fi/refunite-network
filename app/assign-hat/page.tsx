@@ -1,6 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { HatsClient } from "@hatsprotocol/sdk-v1-core";
+import { getAddress } from "viem";
+import { useAccount } from "wagmi";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,31 +12,55 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
-// This is a placeholder function. In a real implementation, this would interact with the Hats protocol.
-async function mintHat(address: string, name: string): Promise<boolean> {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  // For demonstration, we'll randomly succeed or fail
-  return Math.random() > 0.5;
-}
+import { useHatsClient } from "@/hooks/useHatsClient";
 
 export default function AssignHatPage() {
-  const [address, setAddress] = useState("");
+  const { address: account } = useAccount();
+  const [recipient, setRecipient] = useState("");
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { hatsClient, isLoading: isHatsClientLoading, error: hatsClientError } = useHatsClient();
   const { toast } = useToast();
+  const [isWearer, setIsWearer] = useState(false);
+
+  //TODO add dropdown for selection of hat to mint
+
+  useEffect(() => {
+    const getWearerStatus = async () => {
+      if (isHatsClientLoading || !hatsClient || !account) {
+        console.log({ isHatsClientLoading, hatsClient, account });
+        return;
+      }
+      const isWearer = await hatsClient.isWearerOfHat({
+        wearer: getAddress(account),
+        hatId: BigInt("0x0000027000020001000000000000000000000000000000000000000000000000"),
+      });
+
+      console.log(isWearer);
+
+      setIsWearer(isWearer);
+    };
+    getWearerStatus();
+  }, [hatsClient, account]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const success = await mintHat(address, name);
+      if (!hatsClient || !account) {
+        throw new Error("HatsClient not initialized");
+      }
+      const result = await hatsClient.mintHat({
+        account: getAddress(account),
+        hatId: BigInt("0x0000027000020001000100000000000000000000000000000000000000000000"),
+        wearer: getAddress(recipient),
+      });
       toast({
-        variant: success ? "default" : "destructive",
-        title: success ? "Success" : "Error",
-        description: success
-          ? `Successfully assigned a Hat to ${name} (${address})`
+        variant: result.status === "success" ? "default" : "destructive",
+        title: result.status ? "Success" : "Error",
+        description: result.status
+          ? `Successfully assigned a Hat to ${name} (${recipient})`
           : "Failed to assign Hat. Please try again.",
       });
     } catch (error) {
@@ -54,6 +82,22 @@ export default function AssignHatPage() {
           <CardDescription>Use this form to mint a new Hat for a community leader</CardDescription>
         </CardHeader>
         <CardContent>
+          {account && (
+            <div className="mb-4 p-3 rounded-lg bg-secondary">
+              <p className="text-sm flex items-center">
+                Hat Status:{" "}
+                {isHatsClientLoading ? (
+                  <span>Checking...</span>
+                ) : isWearer ? (
+                  <span className="text-green-600 font-medium">User has the required hat</span>
+                ) : (
+                  <span className="text-red-600 font-medium">
+                    User does not have the required hat
+                  </span>
+                )}
+              </p>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="address">Wallet Address</Label>
@@ -61,8 +105,8 @@ export default function AssignHatPage() {
                 id="address"
                 type="text"
                 placeholder="0x..."
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                value={recipient}
+                onChange={(e) => setRecipient(e.target.value)}
                 required
               />
             </div>
