@@ -1,8 +1,5 @@
 "use client";
-
 import { useEffect, useState } from "react";
-
-import { HatsClient } from "@hatsprotocol/sdk-v1-core";
 import { getAddress } from "viem";
 import { useAccount } from "wagmi";
 
@@ -11,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-
 import { useHatsClient } from "@/hooks/useHatsClient";
 
 export default function AssignHatPage() {
