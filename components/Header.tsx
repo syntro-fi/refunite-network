@@ -24,16 +24,19 @@ const Header = () => {
     <header>
       <nav className="border-gray-200 px-4 lg:px-6 py-5" aria-label="Main Navigation">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-          <Link href="/" className="flex items-center font-bold text-slate-900 text-2xl">
-            <Image
-              src="/img/logo.svg"
-              alt="Refunite Network logo"
-              width={56}
-              height={56}
-              priority
-            />
-          </Link>
-          <div className="flex items-center lg:order-2 gap-4">
+          <div className="w-[200px] lg:flex-none">
+            <Link href="/" className="flex items-center font-bold text-slate-900 text-2xl">
+              <Image
+                src="/img/logo.svg"
+                alt="Refunite Network logo"
+                width={56}
+                height={56}
+                priority
+              />
+            </Link>
+          </div>
+
+          <div className="w-[200px] flex justify-end items-center gap-4 lg:flex-none">
             <ConnectButton />
             <Button
               variant="ghost"
@@ -50,7 +53,7 @@ const Header = () => {
           <div
             className={`${
               isOpen ? "block" : "hidden"
-            } justify-between items-center w-full lg:flex lg:w-auto lg:order-1`}
+            } w-full lg:flex lg:w-auto lg:order-1 lg:absolute lg:left-1/2 lg:-translate-x-1/2 lg:justify-center`}
             id="mobile-menu"
           >
             <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
