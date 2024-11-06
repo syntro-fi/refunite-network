@@ -36,10 +36,8 @@ export default function AssignHatPage() {
   const { hatsClient, isLoading: isHatsClientLoading, error: hatsClientError } = useHatsClient();
   const { toast } = useToast();
   const [isWearer, setIsWearer] = useState(false);
-  // const isWearer = hatsClient?.isWearerOfHat({
-  //   wearer: getAddress(account),
-  //   hatId: BigInt("0x0000027000020001000000000000000000000000000000000000000000000000"),
-  // });
+
+  //TODO add dropdown for selection of hat to mint
 
   useEffect(() => {
     const getWearerStatus = async () => {
@@ -67,7 +65,11 @@ export default function AssignHatPage() {
       if (!hatsClient) {
         throw new Error("HatsClient not initialized");
       }
-      const success = await mintHat(hatsClient, account, recipient, name);
+      const success = await hatsClient.mintHat({
+        account: getAddress(account),
+        hatId: BigInt("0x0000027000020001000100000000000000000000000000000000000000000000"),
+        wearer: getAddress(recipient),
+      });
       toast({
         variant: success ? "default" : "destructive",
         title: success ? "Success" : "Error",
