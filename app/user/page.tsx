@@ -18,7 +18,7 @@ export default function AccountPage() {
   const [hatId, setHatId] = useState<string | null>(null);
 
   const hatsContractAddress = "0x3bc1A0Ad72417f2d411118085256fC53CBdDd137"; // Hats protocol contract address
-  const hatsId = "0x0000027000020000000000000000000000000000000000000000000000000000"; // https://app.hatsprotocol.xyz/trees/11155111/624?hatId=624.2
+  const hatsId = BigInt("0x0000027000020000000000000000000000000000000000000000000000000000"); // https://app.hatsprotocol.xyz/trees/11155111/624?hatId=624.2
 
   const {
     data: hatData,
@@ -29,7 +29,6 @@ export default function AccountPage() {
     abi: HatsAbi,
     functionName: "viewHat",
     args: [hatsId],
-    enabled: isConnected,
   });
 
   useEffect(() => {
