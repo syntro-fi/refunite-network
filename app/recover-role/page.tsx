@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-import { Hex } from "viem";
-import { useAccount, usePublicClient, useWalletClient } from "wagmi";
-import { useWaitForTransactionReceipt } from "wagmi";
+import { getAddress, Hex } from "viem";
+import { useAccount, usePublicClient, useWaitForTransactionReceipt, useWalletClient } from "wagmi";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -18,13 +17,12 @@ import { abi as HatsAbi } from "@/lib/hatsAbi";
 export default function RecoverRolePage() {
   const publicClient = usePublicClient();
   const { data: walletClient, isLoading } = useWalletClient();
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const [peerAddress, setPeerAddress] = useState("");
-  const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
 
   const hatsContractAddress = "0x3bc1A0Ad72417f2d411118085256fC53CBdDd137"; // Sepolia testnet address
   const [txHash, setTxHash] = useState("");
-  const { data, isSuccess, isError } = useWaitForTransactionReceipt({
+  const { isSuccess, isError } = useWaitForTransactionReceipt({
     hash: txHash as Hex,
   });
 
@@ -42,8 +40,7 @@ export default function RecoverRolePage() {
       address: hatsContractAddress,
       abi: HatsAbi,
       functionName: "mintHat",
-      args: [hatsId, peerAddress],
-      enabled: isConnected && peerAddress !== "",
+      args: [hatsId, getAddress(peerAddress)],
     });
 
     if (!request || !walletClient) {
