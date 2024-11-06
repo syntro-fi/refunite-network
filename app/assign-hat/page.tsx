@@ -14,20 +14,6 @@ import { useToast } from "@/components/ui/use-toast";
 
 import { useHatsClient } from "@/hooks/useHatsClient";
 
-// This is a placeholder function. In a real implementation, this would interact with the Hats protocol.
-async function mintHat(
-  hatsClient: HatsClient,
-  hatter: string,
-  recipient: string,
-  hatId: bigint
-): Promise<boolean> {
-  return await hatsClient.mintHat({
-    account: getAddress(hatter),
-    hatId,
-    wearer: getAddress(recipient),
-  });
-}
-
 export default function AssignHatPage() {
   const { address: account } = useAccount();
   const [recipient, setRecipient] = useState("");
@@ -62,18 +48,18 @@ export default function AssignHatPage() {
     setIsLoading(true);
 
     try {
-      if (!hatsClient) {
+      if (!hatsClient || !account) {
         throw new Error("HatsClient not initialized");
       }
-      const success = await hatsClient.mintHat({
+      const result = await hatsClient.mintHat({
         account: getAddress(account),
         hatId: BigInt("0x0000027000020001000100000000000000000000000000000000000000000000"),
         wearer: getAddress(recipient),
       });
       toast({
-        variant: success ? "default" : "destructive",
-        title: success ? "Success" : "Error",
-        description: success
+        variant: result.status === "success" ? "default" : "destructive",
+        title: result.status ? "Success" : "Error",
+        description: result.status
           ? `Successfully assigned a Hat to ${name} (${recipient})`
           : "Failed to assign Hat. Please try again.",
       });

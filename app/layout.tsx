@@ -1,9 +1,11 @@
 import React from "react";
+
+import Header from "@/components/Header";
+import { Toaster } from "@/components/ui/toaster";
+
 import type { Metadata } from "next";
 
 import ContextProvider from "@/context";
-import Header from "@/components/Header";
-import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME!,
