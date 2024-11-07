@@ -32,7 +32,7 @@ export default function AssignHatPage() {
       if (!isHatsConnected || !hatsInteractions) {
         throw new Error("Hats client not connected");
       }
-
+      console.log("sending request");
       const result = await hatsInteractions.createAndMintHatSafe(recipient, name);
 
       if (result.success) {

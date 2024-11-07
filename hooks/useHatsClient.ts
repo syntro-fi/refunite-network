@@ -4,7 +4,7 @@ import { HatsClient } from "@hatsprotocol/sdk-v1-core";
 import { getChainId } from "@wagmi/core";
 import { usePublicClient, useWalletClient } from "wagmi";
 
-import { wagmiConfig } from "@/context";
+import { wagmiConfig } from "@/wagmi/config";
 
 export const useHatsClient = () => {
   const [hatsClient, setHatsClient] = useState<HatsClient | null>(null);
