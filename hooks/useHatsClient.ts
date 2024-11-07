@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
 import { HatsClient } from "@hatsprotocol/sdk-v1-core";
-import { getChainId, getWalletClient } from "@wagmi/core";
+import { getChainId, getPublicClient, getWalletClient } from "@wagmi/core";
 import { usePublicClient } from "wagmi";
 
-import { wagmiConfig } from "@/wagmi/config";
+import { wagmiConfig } from "@/context";
 
 export const useHatsClient = () => {
   const [hatsClient, setHatsClient] = useState<HatsClient | null>(null);
