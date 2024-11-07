@@ -1,12 +1,15 @@
 "use client";
 import { MultiCallResult } from "@hatsprotocol/sdk-v1-core";
 import { HatsClient } from "@hatsprotocol/sdk-v1-core";
+import Safe from "@safe-global/protocol-kit";
+import { Eip1193Provider } from "@safe-global/protocol-kit/dist/src/types/safeProvider";
+import { TransactionResult } from "@safe-global/types-kit";
 import { getAddress, Hex } from "viem";
-import { useAccount } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 
 import { useHatsClient } from "./useHatsClient";
 
-import { ATLANTIS_HAT_ID, ATLANTIS_SAFE_ADDRESS } from "@/lib/constants";
+import { ATLANTIS_HAT_ID, ATLANTIS_SAFE_ADDRESS, HATS_CONTRACT_ADDRESS } from "@/lib/constants";
 
 type Result<T, E = Error> = { success: true; data: T } | { success: false; error: E };
 
@@ -21,13 +24,24 @@ interface CreateHatData {
   nextHatId: bigint;
 }
 
+export interface SafeTxData {
+  to: string;
+  value: string;
+  data: string;
+}
+
 interface HatsInteractions {
   createAndMintHat: (recipient: string, name: string) => Promise<Result<MultiCallResult, Error>>;
+  createAndMintHatSafe: (
+    recipient: string,
+    name: string
+  ) => Promise<Result<TransactionResult, Error>>;
 }
 
 export const useHatsInteractions = () => {
   const { hatsClient, isLoading: isClientLoading } = useHatsClient();
   const { address } = useAccount();
+  const { data: walletClient } = useWalletClient();
 
   if (!hatsClient) {
     return {
@@ -67,6 +81,38 @@ export const useHatsInteractions = () => {
         };
       }
     },
+    createAndMintHatSafe: async (recipient: string, name: string) => {
+      const safe = await Safe.init({
+        provider: walletClient as Eip1193Provider,
+        safeAddress: ATLANTIS_SAFE_ADDRESS,
+      });
+
+      const data = await buildHatData(hatsClient, recipient, name);
+      if (!data) {
+        return {
+          success: false,
+          error: new Error("Failed to construct hat transaction data"),
+        };
+      }
+
+      try {
+        const tx = await safe.createTransaction({
+          transactions: mapToSafeTx(HATS_CONTRACT_ADDRESS, data),
+        });
+        // const txHash = await safe.getTransactionHash(tx)
+        // const signature = await safe.signHash(txHash)
+        const txWithSignature = await safe.executeTransaction(tx);
+        return {
+          success: true,
+          data: txWithSignature,
+        };
+      } catch (err) {
+        return {
+          success: false,
+          error: err instanceof Error ? err : new Error("Failed to create and mint hat"),
+        };
+      }
+    },
   };
 
   return {
@@ -74,6 +120,13 @@ export const useHatsInteractions = () => {
     isConnected: !!address && !isClientLoading,
   };
 };
+
+function mapToSafeTx(address: string, data: CreateHatData): SafeTxData[] {
+  return [
+    { to: address, value: "0", data: data.createHatCalldata.callData },
+    { to: address, value: "0", data: data.mintHatCalldata.callData },
+  ];
+}
 
 async function buildHatData(
   hatsClient: HatsClient,

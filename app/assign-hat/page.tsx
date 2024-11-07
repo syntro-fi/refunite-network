@@ -1,40 +1,23 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { useAccount, useWalletClient } from "wagmi";
+import { useAccount } from "wagmi";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
-import { useHatsClient } from "@/hooks/useHatsClient";
 import { useHatsInteractions } from "@/hooks/useHatsInteractions";
+import { useSafeOwner } from "@/hooks/useSafeOwner";
 
 export default function AssignHatPage() {
   const { address: account, isConnected } = useAccount();
   const [recipient, setRecipient] = useState("");
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { hatsClient, isLoading: isHatsClientLoading, error: hatsClientError } = useHatsClient();
   const { toast } = useToast();
-  const [isWearer, setIsWearer] = useState(false);
-
-  useEffect(() => {
-    const getWearerStatus = async () => {
-      if (isHatsClientLoading || !hatsClient || !account) {
-        console.log({ isHatsClientLoading, hatsClient, account });
-        return;
-      }
-      const isWearer = await hatsClient.isWearerOfHat({
-        wearer: getAddress(account),
-        hatId: BigInt("0x0000027000020001000000000000000000000000000000000000000000000000"),
-      });
-      console.log(isWearer);
-      setIsWearer(isWearer);
-    };
-    getWearerStatus();
-  }, [hatsClient, account, isHatsClientLoading]);
+  const { isMultisigOwner, isLoading: isSafeLoading } = useSafeOwner();
   const { hatsInteractions, isConnected: isHatsConnected } = useHatsInteractions();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,15 +25,15 @@ export default function AssignHatPage() {
     setIsLoading(true);
 
     try {
-      if (!hatsClient || !account) {
-        throw new Error("HatsClient not initialized");
+      if (!isMultisigOwner) {
+        throw new Error("Not authorized to create hats");
       }
 
       if (!isHatsConnected || !hatsInteractions) {
         throw new Error("Hats client not connected");
       }
 
-      const result = await hatsInteractions.createAndMintHat(recipient, name);
+      const result = await hatsInteractions.createAndMintHatSafe(recipient, name);
 
       if (result.success) {
         setName("");
@@ -65,6 +48,7 @@ export default function AssignHatPage() {
           : result.error.message,
       });
     } catch (error) {
+      console.error("the error", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -97,16 +81,18 @@ export default function AssignHatPage() {
         {account && (
           <section>
             <h2 className="text-md text-indigo-600 font-semibold tracking-tight mb-3">
-              Hat Status
+              Authorization Status
             </h2>
             <p className="text-sm">
-              {isHatsClientLoading ? (
-                "Checking..."
-              ) : isWearer ? (
-                <span className="text-green-600 font-medium">User has the required hat</span>
+              {isSafeLoading ? (
+                "Checking permissions..."
+              ) : isMultisigOwner ? (
+                <span className="text-green-600 font-medium">
+                  You can create and assign new hats as a Safe owner
+                </span>
               ) : (
                 <span className="text-red-600 font-medium">
-                  User does not have the required hat
+                  You don&apos;t have permission to create new hats
                 </span>
               )}
             </p>
