@@ -105,13 +105,12 @@ export default function AccountPage() {
       <div className="max-w-3xl mx-auto space-y-8">
         <header className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Account</h1>
-          {/* <Button variant="outline" size="sm">Edit Profile</Button> */}
         </header>
 
         <section className="flex items-center space-x-4">
           <Avatar className="h-16 w-16">
             <AvatarImage src={`https://robohash.org/${address}`} alt="User avatar" />
-            <AvatarFallback>UN</AvatarFallback>
+            <AvatarFallback>0x</AvatarFallback>
           </Avatar>
           <div>
             <h2 className="text-lg font-semibold">Community Leader</h2>
@@ -170,32 +169,13 @@ export default function AccountPage() {
         </section>
 
         <section>
-          <div className="space-y-2">
-            <h3 className="text-lg font-semibold">Actions</h3>
-            <div className="space-y-2">
-              <Button
-                className="w-full"
-                onClick={() => alert("View Hat details")}
-                disabled={isHatLoading || isHatError}
-              >
-                View Hat Details
-              </Button>
-              <Link href="/recover-role" passHref>
-                <Button className="w-full" variant="outline">
-                  Recover Role
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-        <section>
           <h2 className="text-md text-indigo-600 font-semibold tracking-tight mb-3">Actions</h2>
           <div className="flex gap-4">
-            <Button variant="default" onClick={() => alert("View Hat details")}>
-              View Hat Details
-            </Button>
+            <Link href="/assign-hat" passHref>
+              <Button>Assign Role</Button>
+            </Link>
             <Link href="/recover-role" passHref>
-              <Button variant="secondary">Recover Role</Button>
+              <Button>Recover Role</Button>
             </Link>
           </div>
         </section>
