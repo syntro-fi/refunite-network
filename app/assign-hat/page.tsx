@@ -1,13 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
+
 import { getAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+
 import { useHatsClient } from "@/hooks/useHatsClient";
 
 export default function AssignHatPage() {
@@ -19,8 +20,6 @@ export default function AssignHatPage() {
   const { toast } = useToast();
   const [isWearer, setIsWearer] = useState(false);
 
-  //TODO add dropdown for selection of hat to mint
-
   useEffect(() => {
     const getWearerStatus = async () => {
       if (isHatsClientLoading || !hatsClient || !account) {
@@ -31,13 +30,11 @@ export default function AssignHatPage() {
         wearer: getAddress(account),
         hatId: BigInt("0x0000027000020001000000000000000000000000000000000000000000000000"),
       });
-
       console.log(isWearer);
-
       setIsWearer(isWearer);
     };
     getWearerStatus();
-  }, [hatsClient, account]);
+  }, [hatsClient, account, isHatsClientLoading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,58 +68,59 @@ export default function AssignHatPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-8">
-      <Card className="max-w-md mx-auto">
-        <CardHeader>
-          <CardTitle>Assign Hat to Community Leader</CardTitle>
-          <CardDescription>Use this form to mint a new Hat for a community leader</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {account && (
-            <div className="mb-4 p-3 rounded-lg bg-secondary">
-              <p className="text-sm flex items-center">
-                Hat Status:{" "}
-                {isHatsClientLoading ? (
-                  <span>Checking...</span>
-                ) : isWearer ? (
-                  <span className="text-green-600 font-medium">User has the required hat</span>
-                ) : (
-                  <span className="text-red-600 font-medium">
-                    User does not have the required hat
-                  </span>
-                )}
-              </p>
-            </div>
-          )}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="address">Wallet Address</Label>
-              <Input
-                id="address"
-                type="text"
-                placeholder="0x..."
-                value={recipient}
-                onChange={(e) => setRecipient(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="name">Leader Name</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="John Doe"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Assigning..." : "Assign Hat"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-background p-4 sm:p-6 md:p-8">
+      <div className="max-w-3xl mx-auto space-y-8">
+        <header>
+          <h1 className="text-2xl font-semibold">Assign Hat to Community Leader</h1>
+        </header>
+
+        {account && (
+          <section>
+            <h2 className="text-md text-indigo-600 font-semibold tracking-tight mb-3">
+              Hat Status
+            </h2>
+            <p className="text-sm">
+              {isHatsClientLoading ? (
+                "Checking..."
+              ) : isWearer ? (
+                <span className="text-green-600 font-medium">User has the required hat</span>
+              ) : (
+                <span className="text-red-600 font-medium">
+                  User does not have the required hat
+                </span>
+              )}
+            </p>
+          </section>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="address">Wallet Address</Label>
+            <Input
+              id="address"
+              type="text"
+              placeholder="0x..."
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="name">Leader Name</Label>
+            <Input
+              id="name"
+              type="text"
+              placeholder="John Doe"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Assigning..." : "Assign Hat"}
+          </Button>
+        </form>
+      </div>
     </div>
   );
 }
