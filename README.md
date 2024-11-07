@@ -88,7 +88,7 @@ sequenceDiagram
     participant Peer_Leader (Trusted Peer)
     Leader_A->>Peer_Leader: Requests role recovery
     Peer_Leader->>Leader_A: Validates identity and wallet address
-    Peer_Leader->>Leader_A: Assigns new leadership token
+    Peer_Leader->>Leader_A: Assigns new leadership tokenpush
     Peer_Leader->>Blockchain: Burns old token
 ```
 
