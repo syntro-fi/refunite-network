@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { ATLANTIS_HAT_ID, HATS_CONTRACT_ADDRESS } from "@/lib/constants";
 import { abi as HatsAbi } from "@/lib/hatsAbi";
 
 type HatData = {
@@ -37,9 +38,8 @@ export default function AccountPage() {
   const [isMetadataLoading, setIsMetadataLoading] = useState(false);
   const [metadataError, setMetadataError] = useState<Error | null>(null);
 
-  const hatsContractAddress = "0x3bc1A0Ad72417f2d411118085256fC53CBdDd137";
-  const hatsId = BigInt("0x0000027000020000000000000000000000000000000000000000000000000000");
-
+  const hatsContractAddress = HATS_CONTRACT_ADDRESS;
+  const hatsId = BigInt(ATLANTIS_HAT_ID);
   const {
     data: rawHatData,
     isError: isHatError,
