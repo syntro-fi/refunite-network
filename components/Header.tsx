@@ -66,6 +66,16 @@ const Header = () => {
                   </Link>
                 </li>
               ))}
+              <li className="border-b border-gray-100">
+                <a
+                  href="https://app.hatsprotocol.xyz/trees/11155111/639"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block py-2 pr-4 pl-3 text-indigo-800 font-semibold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0"
+                >
+                  Hats tree
+                </a>
+              </li>
             </ul>
           </div>
         </div>
