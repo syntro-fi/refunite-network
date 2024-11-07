@@ -1,6 +1,8 @@
 # Refunite
 
-Refunite is the world’s largest missing persons platform designed for refugees and displaced populations. This project aims to empower Refunite’s network of over 100,000 community leaders representing 100 million members across Africa by introducing decentralized technology to support a self-managed, trust-based network.
+Refunite is the world’s largest missing persons platform designed for refugees and displaced populations. This project
+aims to empower Refunite’s network of over 100,000 community leaders representing 100 million members across Africa by
+introducing decentralized technology to support a self-managed, trust-based network.
 
 ## Table of Contents
 
@@ -20,11 +22,13 @@ The primary goal is to create a decentralized network for community leaders with
 1. Onboarding of community leaders to acknowledge their role within the trust network.
 2. Secure role recovery via peer-to-peer social recovery mechanisms when access is lost.
 
-The first iteration is a pilot with leaders in Uganda, where leaders can recover their credentials from fellow Ugandan leaders.
+The first iteration is a pilot with leaders in Uganda, where leaders can recover their credentials from fellow Ugandan
+leaders.
 
 ## Features
 
-- **Role Management**: Community leaders receive on-chain credentials through the [Hats Protocol](https://www.hatsprotocol.xyz/) to attest to their roles.
+- **Role Management**: Community leaders receive on-chain credentials through
+  the [Hats Protocol](https://www.hatsprotocol.xyz/) to attest to their roles.
 - **Social Recovery**: Leaders who lose access to their credentials can regain access through peer validation.
 - **Decentralized Trust Network**: No central control over the state; managed entirely by leaders themselves.
 - **Scalability**: Designed to support up to 100,000 leaders, grouped by geographic or other predefined subsets.
@@ -73,23 +77,23 @@ The first iteration is a pilot with leaders in Uganda, where leaders can recover
 
 ```mermaid
 sequenceDiagram
-    participant Refunite
-    participant Community_Leader
-    Refunite->>Community_Leader: Validates leader role
-    Community_Leader->>Refunite: Provides wallet address
-    Refunite->>Community_Leader: Assigns leadership token
+    autonumber
+    New Leader->>+Existing Leader: Seeks acknowledgment
+    Existing Leader->>+New Leader: Peer validation
+    New Leader->>+Existing Leader: Provides wallet address
+    Existing Leader->>-New Leader: Issues leadership token
 ```
 
 ### 2. Role Recovery
 
 ```mermaid
 sequenceDiagram
-    participant Leader_A (Loses Access)
-    participant Peer_Leader (Trusted Peer)
-    Leader_A->>Peer_Leader: Requests role recovery
-    Peer_Leader->>Leader_A: Validates identity and wallet address
-    Peer_Leader->>Leader_A: Assigns new leadership tokenpush
-    Peer_Leader->>Blockchain: Burns old token
+    autonumber
+    Trusted Leader->>+Peer Leader: Reports credential loss
+    Peer Leader->>+Trusted Leader: Peer validation
+    Trusted Leader->>+Peer Leader: Provides new wallet address
+    Peer Leader->>-Trusted Leader: Issues new leadership token
+    Peer Leader->>System: Burns old credential token
 ```
 
 ## Future Enhancements
