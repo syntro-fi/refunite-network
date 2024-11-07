@@ -82,20 +82,21 @@ export const useHatsInteractions = () => {
       }
     },
     createAndMintHatSafe: async (recipient: string, name: string) => {
-      const safe = await Safe.init({
-        provider: walletClient as Eip1193Provider,
-        safeAddress: ATLANTIS_SAFE_ADDRESS,
-      });
-
-      const data = await buildHatData(hatsClient, recipient, name);
-      if (!data) {
-        return {
-          success: false,
-          error: new Error("Failed to construct hat transaction data"),
-        };
-      }
-
+      console.log("creating and minting hat safe", walletClient);
       try {
+        const safe = await Safe.init({
+          provider: walletClient as Eip1193Provider,
+          safeAddress: ATLANTIS_SAFE_ADDRESS,
+        });
+
+        const data = await buildHatData(hatsClient, recipient, name);
+        if (!data) {
+          return {
+            success: false,
+            error: new Error("Failed to construct hat transaction data"),
+          };
+        }
+
         const tx = await safe.createTransaction({
           transactions: mapToSafeTx(HATS_CONTRACT_ADDRESS, data),
         });
@@ -107,6 +108,7 @@ export const useHatsInteractions = () => {
           data: txWithSignature,
         };
       } catch (err) {
+        console.error("the real error", err);
         return {
           success: false,
           error: err instanceof Error ? err : new Error("Failed to create and mint hat"),
