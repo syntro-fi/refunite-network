@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-import { getAddress } from "viem";
-import { useAccount } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
 import { useHatsClient } from "@/hooks/useHatsClient";
+import { useHatsInteractions } from "@/hooks/useHatsInteractions";
 
 export default function AssignHatPage() {
   const { address: account, isConnected } = useAccount();
@@ -35,6 +35,7 @@ export default function AssignHatPage() {
     };
     getWearerStatus();
   }, [hatsClient, account, isHatsClientLoading]);
+  const { hatsInteractions, isConnected: isHatsConnected } = useHatsInteractions();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,23 +45,30 @@ export default function AssignHatPage() {
       if (!hatsClient || !account) {
         throw new Error("HatsClient not initialized");
       }
-      const result = await hatsClient.mintHat({
-        account: getAddress(account),
-        hatId: BigInt("0x0000027000020001000100000000000000000000000000000000000000000000"),
-        wearer: getAddress(recipient),
-      });
+
+      if (!isHatsConnected || !hatsInteractions) {
+        throw new Error("Hats client not connected");
+      }
+
+      const result = await hatsInteractions.createAndMintHat(recipient, name);
+
+      if (result.success) {
+        setName("");
+        setRecipient("");
+      }
+
       toast({
-        variant: result.status === "success" ? "default" : "destructive",
-        title: result.status ? "Success" : "Error",
-        description: result.status
-          ? `Successfully assigned a Hat to ${name} (${recipient})`
-          : "Failed to assign Hat. Please try again.",
+        variant: result.success ? "default" : "destructive",
+        title: result.success ? "Success" : "Error",
+        description: result.success
+          ? `Successfully proposed hat creation and minting for ${name} (${recipient})`
+          : result.error.message,
       });
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "An error occurred while assigning the Hat. Please try again.",
+        description: error instanceof Error ? error.message : "An error occurred",
       });
     } finally {
       setIsLoading(false);
