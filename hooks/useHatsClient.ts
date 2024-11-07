@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
 import { HatsClient } from "@hatsprotocol/sdk-v1-core";
-import { getChainId, getPublicClient, getWalletClient } from "@wagmi/core";
-import { usePublicClient } from "wagmi";
+import { getChainId } from "@wagmi/core";
+import { usePublicClient, useWalletClient } from "wagmi";
 
 import { wagmiConfig } from "@/context";
 
@@ -11,23 +11,21 @@ export const useHatsClient = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const publicClient = usePublicClient();
+  const { data: walletClient, isLoading: isWalletClientLoading } = useWalletClient();
 
   useEffect(() => {
     const initHatsClient = async () => {
-      if (!publicClient) {
+      if (!publicClient || isWalletClientLoading) {
         return;
       }
       try {
         setIsLoading(true);
         const chainId = getChainId(wagmiConfig);
-        const walletClient = await getWalletClient(wagmiConfig);
-
         const client = new HatsClient({
           chainId,
           publicClient,
           walletClient,
         });
-
         setHatsClient(client);
         setError(null);
       } catch (err) {
@@ -39,7 +37,7 @@ export const useHatsClient = () => {
     };
 
     initHatsClient();
-  }, [publicClient]);
+  }, [walletClient]);
 
   return {
     hatsClient,
